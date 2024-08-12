@@ -1,0 +1,6 @@
+langchain
+langchain-core
+langchain_community
+sentence-transformers
+umap-learn
+langchain_groq
