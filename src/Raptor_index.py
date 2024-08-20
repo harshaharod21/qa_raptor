@@ -21,16 +21,22 @@ import umap
 from dotenv import load_dotenv
 load_dotenv()
 from langchain_core.runnables import RunnablePassthrough
+from langchain_openai import ChatOpenAI
+
 
 
 
 def llm():
     "Define LLM to be used"
+    #OPENAI_API_KEY=os.environ['OPENAI_API_KEY']
     
-    GROQ_API_KEY= os.environ['GROQ_API_KEY']
 
-    model_llm= ChatGroq(groq_api_key=GROQ_API_KEY,
-              model_name='llama3-70b-8192')
+    model_llm = ChatOpenAI(
+    model="gpt-4-0125-preview",
+    temperature=0,
+    max_tokens=None,
+    )
+
     return model_llm
 
     
@@ -254,7 +260,7 @@ def embed_cluster_summarize(model_llm,
         return df_clusters, df_summary
 
 def recursive_embed_cluster_summarize(
-        texts: List[str], level: int = 1, n_levels: int = 3 
+            texts: List[str],level: int = 1, n_levels: int = 3,
     ) -> Dict[int, Tuple[pd.DataFrame, pd.DataFrame]]:
         """
         Recursively embeds, clusters, and summarizes texts up to a specified level or until
@@ -270,11 +276,14 @@ def recursive_embed_cluster_summarize(
         levels and values are tuples containing the clusters DataFrame and summaries DataFrame at that level.
         """
         results = {}  # Dictionary to store results at each level
-        GROQ_API_KEY= os.environ['GROQ_API_KEY']
+        
+        #OPENAI_API_KEY=os.environ['OPENAI_API_KEY']
 
-
-        model_llm= ChatGroq(groq_api_key=GROQ_API_KEY,
-                model_name='llama3-70b-8192')
+        model_llm = ChatOpenAI(
+        model="gpt-4-0125-preview",
+        temperature=0,
+        max_tokens=None,
+        )
 
         # Perform embedding, clustering, and summarization for the current level
         df_clusters, df_summary = embed_cluster_summarize(model_llm,texts, level)

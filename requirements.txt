@@ -4,3 +4,7 @@ langchain_community
 sentence-transformers
 umap-learn
 langchain_groq
+pandas
+numpy
+python-dotenv
+langchain-openai

@@ -2,8 +2,9 @@ from langchain.prompts import ChatPromptTemplate
 from langchain import LLMChain
 
 from langchain_core.output_parsers import StrOutputParser
+import pandas as pd
 
-
+'''
 # Define the prompt template
 def question_answer(results,model_llm):
 
@@ -43,7 +44,44 @@ def question_answer(results,model_llm):
 
     return qa_results
 
-    # Now `qa_results` contains the Q&A pairs for each level
+    # Now `qa_results` contains the Q&A pairs for each level'''
 
 
 
+
+
+def question_answer(results, model_llm, output_file='qa_results.csv'):
+    # Define the prompt template
+    template = """
+        You are an AI assistant. Given the following summary, generate a question that could be asked about it, 
+        followed by a detailed answer. Don't output anything like "Here is a question and answer based on the summary", 
+        just provide the question and the answer in the given format below
+
+        Summary: {summary}
+
+        Question: 
+        Answer:
+        """
+    
+    prompt = ChatPromptTemplate.from_template(template)
+    chain = prompt | model_llm | StrOutputParser()
+
+    # Dictionary to store Q&A pairs for each level
+    qa_results1 = []
+
+    # Iterate through each level in the results
+    for level in results.keys():
+        level_summaries = results[level][1]["summaries"]  # Access summaries at the current level
+
+        for summary in level_summaries:
+            qa_pair = chain.invoke({"summary": summary})  # Generate Q&A pair for each summary
+            question, answer = qa_pair.split('\n\n', 1)  # Split into question and answer
+            qa_results1.append({'Level': level, 'Question': question.strip(), 'Answer': answer.strip()})
+    
+    
+
+    # Create a DataFrame and save to CSV
+    df = pd.DataFrame(qa_results1)
+    df.to_csv(output_file, index=False)
+
+    return qa_results1

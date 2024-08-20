@@ -11,8 +11,8 @@ def main():
 
     results = recursive_embed_cluster_summarize(data, level=1, n_levels=3)
 
-    qa_results=question_answer(results,model_llm)
-    print(qa_results)
+    qa_results1=question_answer(results,model_llm)
+    
 
 
 if __name__== "__main__":
